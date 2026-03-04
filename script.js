@@ -166,6 +166,22 @@ search.addEventListener("click", () => {
         v.classList.remove("bg-primary","text-white");
     })
 
+    if(card.children.length === 0){
+        const d = document.createElement("div");
+        d.className = "col-span-full"
+        d.innerHTML = `<div class="hero-content text-center py-10">
+            <div class="max-w-md space-y-5">
+              <div class="text-6xl text-blue-600 font-bold">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+              </div>
+              <p class="text-3xl font-medium">Please input the letter</p>
+            </div>
+          </div>`;
+        card.appendChild(d);
+        load(false);
+        return;
+    }
+
     if(f.length === 0){
         const d = document.createElement("div");
         d.className = "col-span-full"
