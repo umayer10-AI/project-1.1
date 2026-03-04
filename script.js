@@ -15,6 +15,44 @@ let g = async () => {
 }
 g();
 
+let add = (v) => {
+    let m = v.map(x => `<button class="btn btn-soft btn-accent">${x}</button>`);
+    return m.join(" ");
+}
+
+let local = async (id) => {
+
+    const a = await fetch(`https://openapi.programming-hero.com/api/word/${id}`);
+    const b = await a.json();
+    const c = b.data;
+    console.log(c);
+
+    const div = document.querySelector(".kk");
+    div.innerHTML = "";
+
+    const d = document.createElement("div");
+    d.innerHTML = `<div class="space-y-5 border-1 border-gray-300 p-5 rounded-2xl kk">
+                <h2 class="text-2xl font-bold">${c.word} ( <i class="fa-solid fa-microphone"></i>: ${c.pronunciation})</h2>
+                <div class="space-y-2.5">
+                  <p class="text-lg font-semibold">Meaning</p>
+                  <p>${c.meaning}</p>
+                </div>
+                <div class="space-y-2.5">
+                  <p class="text-lg font-semibold">Example</p>
+                  <p>${c.sentence}</p>
+                </div>
+                <div class="space-y-2.5">
+                  <p class="font-semibold">সমার্থক শব্দ গুলো</p>
+                  <div> ${add(c.synonyms)} </div>
+                </div>
+            </div>`;
+
+    div.appendChild(d);
+    
+    document.getElementById("my_modal").showModal();
+}
+
+
 let cardContainer = (v) =>{
     const card = document.querySelector(".card");
     card.innerHTML = "";
@@ -36,14 +74,14 @@ let cardContainer = (v) =>{
 
     v.forEach(x => {
         const d = document.createElement("div");
-        d.innerHTML = `<div class="space-y-5 text-center bg-white p-7 rounded-3xl shadow-md">
+        d.innerHTML = `<div class="space-y-5 text-center bg-white p-7 rounded-2xl shadow-md">
             <div class="space-y-4">
               <h3 class="text-2xl font-bold">${x.word}</h3>
               <p class="font-medium">Meaning /Pronounciation</p>
               <p class="text-2xl font-semibold">"${x.meaning}/${x.pronunciation} ইগার"</p>
             </div>
             <div class="flex justify-between">
-              <button class="btn btn-soft btn-info"><i class="fa-solid fa-circle-info"></i></button>
+              <button onclick="local(${x.id})" class="btn btn-soft btn-info"><i class="fa-solid fa-circle-info"></i></button>
               <button class="btn btn-soft btn-info"><i class="fa-solid fa-volume-high"></i></button>
             </div>
           </div>`;
@@ -56,32 +94,23 @@ let cardContainer = (v) =>{
 let cb = (id) => {
     const a = document.getElementById(id);
 
-    let b1 = document.getElementById("1");
-    let b2 = document.getElementById("2");
-    let b3 = document.getElementById("3");
-    let b4 = document.getElementById("4");
-    let b5 = document.getElementById("5");
-    let b6 = document.getElementById("6");
-    let b7 = document.getElementById("7");
-
-    b1.classList.remove("bg-primary","text-white");
-    b2.classList.remove("bg-primary","text-white");
-    b3.classList.remove("bg-primary","text-white");
-    b4.classList.remove("bg-primary","text-white");
-    b5.classList.remove("bg-primary","text-white");
-    b6.classList.remove("bg-primary","text-white");
-    b7.classList.remove("bg-primary","text-white");
+    let k = document.querySelectorAll(".button button");
+    k.forEach(v => {
+        v.classList.remove("bg-primary","text-white");
+    })
 
     a.classList.add("bg-primary","text-white");
-
 }
 
+
+
 btn.addEventListener("click", async (e) => {
-    if(e.target.matches("button")){
+    const button = e.target.closest("button");
+    if(button){
         const a = await fetch(`https://openapi.programming-hero.com/api/level/${e.target.id}`);
         const b = await a.json();
         const c = b.data;
-        const f = e.target.id;
+        const f = button.id;
 
         cb(f);
         cardContainer(c);
