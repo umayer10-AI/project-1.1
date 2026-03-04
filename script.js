@@ -1,3 +1,10 @@
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-US"; // English
+  window.speechSynthesis.speak(utterance);
+}
+
+
 const btn = document.querySelector(".button");
 
 let g = async () => {
@@ -95,7 +102,7 @@ let cardContainer = (v) =>{
             </div>
             <div class="flex justify-between">
               <button onclick="local(${x.id})" class="btn btn-soft btn-info"><i class="fa-solid fa-circle-info"></i></button>
-              <button class="btn btn-soft btn-info"><i class="fa-solid fa-volume-high"></i></button>
+              <button onclick="pronounceWord('${x.word}')" class="btn btn-soft btn-info"><i class="fa-solid fa-volume-high"></i></button>
             </div>
           </div>`;
         
@@ -129,4 +136,66 @@ btn.addEventListener("click", async (e) => {
         cardContainer(c);
         load(false);
     }
+})
+
+
+const search = document.querySelector(".search button");
+
+let arr = [];
+
+let allSearch = async () => {
+    const a = await fetch("https://openapi.programming-hero.com/api/words/all");
+    const b = await a.json();
+    arr = b.data;
+}
+allSearch();
+
+search.addEventListener("click", () => {
+
+    load(false);
+    const input = document.querySelector(".search input");
+    const value = input.value.trim().toLowerCase();
+
+    const f = arr.filter(x => x.word.toLowerCase().includes(value));
+
+    const card = document.querySelector(".card");
+    card.innerHTML = "";
+
+    let k = document.querySelectorAll(".button button");
+    k.forEach(v => {
+        v.classList.remove("bg-primary","text-white");
+    })
+
+    if(f.length === 0){
+        const d = document.createElement("div");
+        d.className = "col-span-full"
+        d.innerHTML = `<div class="hero-content text-center py-10">
+            <div class="max-w-md space-y-5">
+              <div class="text-6xl text-red-600 font-bold">
+                  <i class="fa-solid fa-x"></i>
+              </div>
+              <p class="text-3xl font-medium">Word not founded</p>
+            </div>
+          </div>`;
+        card.appendChild(d);
+        load(false);
+        return;
+    }
+
+    f.forEach(x => {
+        const d = document.createElement("div");
+        d.innerHTML = `<div class="space-y-5 text-center bg-white p-7 rounded-2xl shadow-md">
+            <div class="space-y-4">
+              <h3 class="text-2xl font-bold">${x.word}</h3>
+              <p class="font-medium">Meaning /Pronounciation</p>
+              <p class="text-2xl font-semibold">"${x.meaning}/${x.pronunciation} ইগার"</p>
+            </div>
+            <div class="flex justify-between">
+              <button onclick="local(${x.id})" class="btn btn-soft btn-info"><i class="fa-solid fa-circle-info"></i></button>
+              <button onclick="pronounceWord('${x.word}')" class="btn btn-soft btn-info"><i class="fa-solid fa-volume-high"></i></button>
+            </div>
+          </div>`;
+        
+        card.appendChild(d);
+    })
 })
