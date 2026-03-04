@@ -15,6 +15,17 @@ let g = async () => {
 }
 g();
 
+let load = (v) => {
+    const load = document.querySelector(".load");
+    const card = document.querySelector(".card");
+    if(v === true){
+        load.classList.remove("hidden");
+    }
+    else{
+        load.classList.add("hidden");
+    }
+}
+
 let add = (v) => {
     let m = v.map(x => `<button class="btn btn-soft btn-accent">${x}</button>`);
     return m.join(" ");
@@ -70,6 +81,8 @@ let cardContainer = (v) =>{
             </div>
           </div>`;
         card.appendChild(d);
+        load(false);
+        return;
     }
 
     v.forEach(x => {
@@ -103,16 +116,17 @@ let cb = (id) => {
 }
 
 
-
 btn.addEventListener("click", async (e) => {
     const button = e.target.closest("button");
     if(button){
-        const a = await fetch(`https://openapi.programming-hero.com/api/level/${e.target.id}`);
+        load(true);
+        const a = await fetch(`https://openapi.programming-hero.com/api/level/${button.id}`);
         const b = await a.json();
         const c = b.data;
         const f = button.id;
 
         cb(f);
         cardContainer(c);
+        load(false);
     }
 })
