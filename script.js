@@ -166,7 +166,7 @@ search.addEventListener("click", () => {
         v.classList.remove("bg-primary","text-white");
     })
 
-    if(card.children.length === 0){
+    if(value === ""){
         const d = document.createElement("div");
         d.className = "col-span-full"
         d.innerHTML = `<div class="hero-content text-center py-10">
@@ -214,4 +214,12 @@ search.addEventListener("click", () => {
         
         card.appendChild(d);
     })
+})
+
+
+const b = document.querySelector(".b");
+
+b.addEventListener("click", () => {
+
+    alert("WelCome To Our Website");
 })
